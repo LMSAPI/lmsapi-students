@@ -41,7 +41,7 @@ def students(student):
         return json_util.dumps(students_resp)
 
     if request.method == 'POST':
-        existing_student = mongo_students.find_one({'email': request.args.get('email')})
+        existing_student = mongo_students.find_one({'email': request.args.get('email'), 'teacheruser': teacheruser})
         if existing_student is None:
             mongo_students.insert({'firstname': request.args.get('firstname'), 'lastname': request.args.get('lastname'), 'email': request.args.get('email'), 'teacheruser': teacheruser})
             return 'Added ' + request.args.get('firstname')
