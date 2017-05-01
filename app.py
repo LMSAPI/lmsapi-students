@@ -29,9 +29,10 @@ def root():
     return 'hello there'
 
 
-@app.route('/students', methods=['POST', 'GET', 'PUT', 'DELETE'], defaults={'student': None})
+@app.route('/students', methods=['POST', 'GET', ], defaults={'student': None})
+@app.route('/students/<student>', methods=['PUT', 'DELETE'])
 @require_appkey
-def students():
+def students(student):
     mongo_students = mongo.db.students
     teacheruser = user_name(request.args.get('key'))
 
@@ -49,18 +50,18 @@ def students():
         return 'They already exist!'
 
     if request.method == 'PUT':
-        existing_student = mongo_students.find_one({'email': request.args.get('email'), 'teacheruser': teacheruser})
+        existing_student = mongo_students.find_one({'email': student, 'teacheruser': teacheruser})
         if existing_student is None:
-            mongo_students.update_one({'email': request.args.get('email'), 'teacheruser': teacheruser},
+            mongo_students.update_one({'email': student, 'teacheruser': teacheruser},
                                       {'$inc': {'firstname': request.args.get('firstname'),
                                                 'lastname': request.args.get('lastname')}})
 
         return 'Update failed'
 
     if request.method == 'DELETE':
-        existing_student = mongo_students.find_one({'email': request.args.get('email'), 'teacheruser': teacheruser})
+        existing_student = mongo_students.find_one({'email': student, 'teacheruser': teacheruser})
         if existing_student is None:
-            mongo_students.delete_one({'email': request.args.get('email'), 'teacheruser': teacheruser})
+            mongo_students.delete_one({'email': student, 'teacheruser': teacheruser})
             return 'Deleted ' + request.args.get('email')
 
         return 'Delete failed'
