@@ -29,10 +29,9 @@ def root():
     return 'hello there'
 
 
-@app.route('/students', methods=['POST', 'GET'], defaults={'student': None})
-@app.route('/students/<student>', methods=['PUT', 'DELETE'])
+@app.route('/students', methods=['POST', 'GET', 'PUT', 'DELETE'], defaults={'student': None})
 @require_appkey
-def students(student):
+def students():
     mongo_students = mongo.db.students
     teacheruser = user_name(request.args.get('key'))
 
